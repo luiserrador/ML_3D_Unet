@@ -6,5 +6,5 @@ This repo allows the creation of 3D-Unet of any structure, letting you to choose
 
 To create this network:
 <p align="center">
-  <img width="600" height="200" src="https://github.com/luiserrador/ml/blob/master/images/unet.png">
+  <img width="600" height="500" src="https://github.com/luiserrador/ml/blob/master/images/unet.png">
 </p>
