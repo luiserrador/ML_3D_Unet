@@ -1,8 +1,11 @@
+import netron
 import os
+import unittest
+
+import tensorflow as tf
 
 from utils.layers import *
 from utils.layers_func import *
-import tensorflow as tf
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Comment to use GPU
 
@@ -433,3 +436,7 @@ def testUnet3D():
            len(unet_model_func.trainable_variables)
     assert len(unet_model.non_trainable_variables) == len(model_unet.non_trainable_variables) == \
            len(unet_model_func.non_trainable_variables)
+
+
+if __name__ == '__main__':
+    unittest.main()
