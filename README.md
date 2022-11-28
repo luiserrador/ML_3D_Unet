@@ -10,3 +10,6 @@ To create this network:
 </p>
 
 This is the example code:
+```
+from utils.layers_func import create_unet_3d
+```
