@@ -7,4 +7,4 @@ This repo allows the creation of 3D-Unet of any structure, letting you to choose
 To create this network:
 ![alt text] (https://github.com/luiserrador/ml/images/unet.png)
 
-![alt text] (https://github.com/luiserrador/ml/blob/master/unet.png?raw=true)
+![alt text] (https://github.com/luiserrador/ml/blob/master/unet.png)
