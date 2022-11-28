@@ -9,6 +9,33 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Comment to use GPU
 
 
 class Trainer:
+    """ Generic trainer:
+    Upsample Blocks followed by a ConvBlock (last convolution)
+
+    Parameters
+    -----------
+    n_convs : scalar
+        Number of convolutions
+    n_filters : scalar
+        Number os filters
+    ksize : scalar or tuple of scalars
+        Kernel size
+    padding : str
+        Padding parameter as on Tensorflow ('same', 'valid', ...)
+    activation : str or None
+        Activation parameter as on Tensorflow ('relu', 'linear', ...)
+    norm : str or None
+        Normalization method - choose 'batch_norm'
+    dropout : float
+        Dropout rate to be applied after upsampling/deconvolution (float between 0.0 and 1.0)
+    depth : scalar
+        Depth level on U-net
+    upsampling : boolean
+        Whether to use UpSampling (True) or Conv3DTranspose (False)
+    id : str
+        'encoder' or 'decoder' to identify compression and extension paths
+    """
+
     def __init__(self, model, optimizer, learning_rate, model_dir):
 
         self.model = model

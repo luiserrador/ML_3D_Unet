@@ -433,6 +433,7 @@ class DecoderBlock(Layer):
                                                 dropout[level], depth=level, upsampling=upsampling, id=id)
 
         self.last_conv = Conv3D(1, 1, padding=padding, name='last_logits')
+        self.last_act = Activation('sigmoid', name='output_act')
 
     def call(self, inputs, layer_to_concat, training=None, **kwargs):
 
@@ -440,6 +441,7 @@ class DecoderBlock(Layer):
         for level in range(self.depth - 2, -1, -1):
             x = self.up[str(level)](x, layer_to_concat[str(level)])
         x = self.last_conv(x)
+        x = self.last_act(x)
 
         return x
 
