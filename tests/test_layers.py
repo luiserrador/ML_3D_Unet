@@ -1,4 +1,3 @@
-import netron
 import os
 import unittest
 

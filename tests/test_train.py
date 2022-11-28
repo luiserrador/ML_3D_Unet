@@ -47,7 +47,7 @@ def testTrainer():
     trainer.train(train_ds=train_ds, valid_ds=valid_ds, train_size=10, validation_size=10, loss_fn=loss_fn,
                   accuracy_fn=accuracy_fn, BATCH_SIZE=1, EPOCHS=2, save_step=1)
 
-    print('\nResume training from 2nd')
+    print('\nResume training from 2nd epoch')
 
     trainer.train(train_ds=train_ds, valid_ds=valid_ds, train_size=10, validation_size=10, loss_fn=loss_fn,
                   accuracy_fn=accuracy_fn, BATCH_SIZE=1, EPOCHS=4, save_step=1)

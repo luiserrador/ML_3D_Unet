@@ -9,31 +9,18 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Comment to use GPU
 
 
 class Trainer:
-    """ Generic trainer:
-    Upsample Blocks followed by a ConvBlock (last convolution)
+    """ Generic trainer
 
     Parameters
     -----------
-    n_convs : scalar
-        Number of convolutions
-    n_filters : scalar
-        Number os filters
-    ksize : scalar or tuple of scalars
-        Kernel size
-    padding : str
-        Padding parameter as on Tensorflow ('same', 'valid', ...)
-    activation : str or None
-        Activation parameter as on Tensorflow ('relu', 'linear', ...)
-    norm : str or None
-        Normalization method - choose 'batch_norm'
-    dropout : float
-        Dropout rate to be applied after upsampling/deconvolution (float between 0.0 and 1.0)
-    depth : scalar
-        Depth level on U-net
-    upsampling : boolean
-        Whether to use UpSampling (True) or Conv3DTranspose (False)
-    id : str
-        'encoder' or 'decoder' to identify compression and extension paths
+    model : Tensorflow Model
+        Model to train
+    optimizer : Tensorflow Optimizer
+        Optimizer to use
+    learning_rate : float
+        Learning rate
+    model_dir : str
+        Directory where to save the checkpoints / model
     """
 
     def __init__(self, model, optimizer, learning_rate, model_dir):
@@ -66,7 +53,29 @@ class Trainer:
             print("Initializing from scratch.")
             self.step = 0
 
-    def train(self, train_ds, valid_ds, train_size, validation_size, loss_fn, accuracy_fn, BATCH_SIZE, EPOCHS, save_step=1):
+    def train(self, train_ds, valid_ds, train_size, validation_size, loss_fn, accuracy_fn, BATCH_SIZE, EPOCHS,
+              save_step=1):
+        """ Train the model
+
+        Parameters
+        -----------
+        train_ds : tf.data.Dataset
+            Training dataset
+        valid_ds : tf.data.Dataset
+            Validation dataset
+        train_size : scalar
+            Size of the training dataset
+        validation_size : scalar
+            Size of the validation dataset
+        loss_fn : function
+            Loss function
+        accuracy_fn : function
+            Accuracy function
+        BATCH_SIZE : int
+            Batch size
+        EPOCHS : int
+            Number of epochs to train
+        """
 
         self.EPOCHS = EPOCHS
 
