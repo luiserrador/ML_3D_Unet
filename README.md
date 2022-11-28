@@ -16,7 +16,7 @@ from utils.layers_func import *
 
 unet_model_func = create_unet3d(input_shape=[128, 128, 128, 2],
                                 n_convs=2,
-                                n_filters=[8, 16, 32, 64],
+                                n_filters=[16, 32, 64, 128],
                                 ksize=[3, 3, 3],
                                 padding='same',
                                 pooling='max',
@@ -30,7 +30,7 @@ unet_model_func = create_unet3d(input_shape=[128, 128, 128, 2],
 
 unet_model = create_unet3d_class(input_shape=[128, 128, 128, 2],
                                  n_convs=2,
-                                 n_filters=[8, 16, 32, 64],
+                                 n_filters=[16, 32, 64, 128],
                                  ksize=[3, 3, 3],
                                  padding='same',
                                  pooling='max',
