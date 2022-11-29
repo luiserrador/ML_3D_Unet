@@ -79,8 +79,10 @@ class Trainer:
 
         self.EPOCHS = EPOCHS
 
-        self.loss_fn = loss_fn
-        self.accuracy_fn = accuracy_fn
+        with tf.distribute.get_strategy().scope():
+
+            self.loss_fn = loss_fn
+            self.accuracy_fn = accuracy_fn
 
         self.STEPS_PER_CALL = STEPS_PER_EPOCH = train_size // BATCH_SIZE
         self.VALIDATION_STEPS_PER_CALL = validation_size // BATCH_SIZE
