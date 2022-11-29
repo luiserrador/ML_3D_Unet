@@ -98,7 +98,6 @@ class Trainer:
             while True:
                 # run training step
                 print('\nEPOCH {:d}/{:d}'.format(self.epoch + 1, self.EPOCHS))
-                print('Starting Training')
                 self.train_step(train_data_iter)
                 epoch_steps += self.STEPS_PER_CALL
                 self.step += self.STEPS_PER_CALL
@@ -106,7 +105,6 @@ class Trainer:
 
                 # validation run at the end of each epoch
                 if (self.step // STEPS_PER_EPOCH) > self.epoch:
-                    print('Starting Validation')
                     # validation run
                     valid_epoch_steps = 0
                     self.valid_step(valid_data_iter)
@@ -126,7 +124,7 @@ class Trainer:
                           'val_loss: {:0.4f}'.format(history['val_loss'][-1]),
                           'val_acc: {:0.4f}'.format(history['val_acc'][-1]))
 
-                    print('Saving Model')
+                    # save checkpoint and training_step
                     if save_step and self.epoch % save_step == 0:
                         model_path = (os.path.join(self.model_dir, 'model_epoch_%s.h5' % (self.epoch + 1)))
                     self.model.save(model_path)
@@ -142,7 +140,7 @@ class Trainer:
                     self.valid_loss.reset_states()
                     self.train_loss.reset_states()
                     if self.epoch >= self.EPOCHS:
-                        print('Training done, {} epoch'.format(self.epoch))
+                        print('Training done, {} epochs'.format(self.epoch))
                         break
         else:
             print('\nAlready trained!')
@@ -157,9 +155,7 @@ class Trainer:
             self.optimizer.apply_gradients(zip(grads, self.model.trainable_variables))
             accuracy = self.accuracy_fn(tf.cast(labels, tf.float32), probabilities)
             self.train_accuracy.update_state(accuracy)
-            # train_binary_accuracy.update_state(labels, probabilities)
             self.train_loss.update_state(loss)
-
         for _ in tf.range(self.STEPS_PER_CALL):
             tf.distribute.get_strategy().run(train_step_fn, next(data_iter))
 
