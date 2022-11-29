@@ -14,7 +14,7 @@ This is the example code:
 from utils.layers import *
 from utils.layers_func import *
 
-unet_model_func = create_unet3d(input_shape=[128, 128, 128, 2],
+unet_model_func = create_unet3d(input_shape=[128, 128, 128, 1],
                                 n_convs=2,
                                 n_filters=[16, 32, 64, 128],
                                 ksize=[3, 3, 3],
@@ -28,7 +28,7 @@ unet_model_func = create_unet3d(input_shape=[128, 128, 128, 2],
                                 
 # OR
 
-unet_model = create_unet3d_class(input_shape=[128, 128, 128, 2],
+unet_model = create_unet3d_class(input_shape=[128, 128, 128, 1],
                                  n_convs=2,
                                  n_filters=[16, 32, 64, 128],
                                  ksize=[3, 3, 3],
