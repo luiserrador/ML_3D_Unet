@@ -94,12 +94,12 @@ class Trainer_KD:
             Number of epochs to train
         """
 
-        print('Train Teacher from scratch')
+        print('Train Teacher')
 
         self.trainer_teacher_scratch.train(train_ds, valid_ds, train_size, validation_size, loss_fn, accuracy_fn,
                                            BATCH_SIZE, EPOCHS, save_step)
 
-        print('Train Student from scratch')
+        print('Train Student')
 
         self.trainer_student_scratch.train(train_ds, valid_ds, train_size, validation_size, loss_fn, accuracy_fn,
                                            BATCH_SIZE, EPOCHS, save_step)
