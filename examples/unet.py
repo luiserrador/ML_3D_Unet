@@ -59,7 +59,7 @@ def _get_unet_2():
 
     unet_model_func = create_unet3d(input_shape=[32, 32, 32, 1],
                                     n_convs=2,
-                                    n_filters=[8, 8, 8],
+                                    n_filters=[8, 16, 32],
                                     ksize=[[7, 7, 7], [5, 5, 5], [3, 3, 3]],
                                     padding='same',
                                     pooling='avg',
@@ -72,7 +72,7 @@ def _get_unet_2():
 
     unet_model = create_unet3d_class(input_shape=[32, 32, 32, 1],
                                      n_convs=2,
-                                     n_filters=[8, 8, 8],
+                                     n_filters=[8, 16, 32],
                                      ksize=[[7, 7, 7], [5, 5, 5], [3, 3, 3]],
                                      padding='same',
                                      pooling='avg',
