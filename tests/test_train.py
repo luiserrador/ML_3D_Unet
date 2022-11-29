@@ -3,6 +3,7 @@ import shutil
 
 import tensorflow as tf
 from utils.layers_func import create_unet3d
+from utils.layers import create_unet3d_class
 from utils.train import Trainer
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Comment to use GPU
@@ -10,23 +11,25 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Comment to use GPU
 
 def testTrainer():
     """Testing Trainer Class"""
+    tf.random.set_seed(1)
 
     model_dir = 'tf_ckpt'
 
     if os.path.exists(model_dir):
         shutil.rmtree(model_dir)
 
-    model = create_unet3d(input_shape=[32, 32, 32, 1],
-                          n_convs=1,
-                          n_filters=[8, 16],
-                          ksize=[3, 3, 3],
-                          padding='same',
-                          pooling='avg',
-                          norm='batch_norm',
-                          dropout=[0],
-                          upsampling=True,
-                          activation='relu',
-                          depth=2)
+    with tf.distribute.get_strategy().scope():
+        model = create_unet3d(input_shape=[32, 32, 32, 1],
+                              n_convs=1,
+                              n_filters=[8, 16],
+                              ksize=[3, 3, 3],
+                              padding='same',
+                              pooling='avg',
+                              norm='batch_norm',
+                              dropout=[0],
+                              upsampling=True,
+                              activation='relu',
+                              depth=2)
 
     trainer = Trainer(model, tf.keras.optimizers.Adam, 1e-3, model_dir)
 
