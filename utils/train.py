@@ -5,8 +5,6 @@ import os
 import tensorflow as tf
 import numpy as np
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Comment to use GPU
-
 
 class Trainer:
     """ Generic trainer
@@ -158,6 +156,7 @@ class Trainer:
             accuracy = self.accuracy_fn(tf.cast(labels, tf.float32), probabilities)
             self.train_accuracy.update_state(accuracy)
             self.train_loss.update_state(loss)
+
         for _ in tf.range(self.STEPS_PER_CALL):
             tf.distribute.get_strategy().run(train_step_fn, next(data_iter))
 
@@ -169,5 +168,6 @@ class Trainer:
             accuracy = self.accuracy_fn(tf.cast(labels, tf.float32), probabilities)
             self.valid_accuracy.update_state(accuracy)
             self.valid_loss.update_state(loss)
+
         for _ in tf.range(self.VALIDATION_STEPS_PER_CALL):
             tf.distribute.get_strategy().run(valid_step_fn, next(data_iter))

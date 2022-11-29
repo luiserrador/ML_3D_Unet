@@ -6,7 +6,7 @@ import tensorflow as tf
 from utils.layers import *
 from utils.layers_func import *
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Comment to use GPU
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # uncomment to not use GPU
 
 
 def testConvBlock():

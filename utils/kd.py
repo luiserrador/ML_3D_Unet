@@ -9,8 +9,6 @@ import numpy as np
 
 from utils.train import Trainer
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Comment to use GPU
-
 
 class Trainer_KD:
     """ Trainer for Knowledge Distillation
@@ -60,8 +58,10 @@ class Trainer_KD:
         self.student_model_dir_scratch = model_dir + '_student_scratch'
         self.teacher_model_dir_scratch = model_dir + '_teacher_scratch'
 
-        self.trainer_student_scratch = Trainer(self.student_model_scratch, optimizer, learning_rate, self.student_model_dir_scratch)
-        self.trainer_teacher_scratch = Trainer(self.student_model_scratch, optimizer, learning_rate, self.teacher_model_dir_scratch)
+        self.trainer_student_scratch = Trainer(self.student_model_scratch, optimizer, learning_rate,
+                                               self.student_model_dir_scratch)
+        self.trainer_teacher_scratch = Trainer(self.student_model_scratch, optimizer, learning_rate,
+                                               self.teacher_model_dir_scratch)
 
         if self.manager.latest_checkpoint:
             print("Restored from {}".format(self.manager.latest_checkpoint))
@@ -216,7 +216,6 @@ class Trainer_KD:
 
 
 def _get_teacher_soften(teacher_model, temperature):
-
     with tf.distribute.get_strategy().scope():
         if teacher_model.layers[-1].name == 'unet3d_layer':
             teacher_logits = teacher_model.layers[-1].decoder.last_conv.output
@@ -231,7 +230,6 @@ def _get_teacher_soften(teacher_model, temperature):
 
 
 def _get_student_soften(student_model, temperature):
-
     with tf.distribute.get_strategy().scope():
         if student_model.layers[-1].name == 'unet3d_layer':
             student_logits = student_model.layers[-1].decoder.last_conv.output

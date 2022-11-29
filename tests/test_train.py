@@ -7,7 +7,7 @@ from utils.layers_func import create_unet3d
 from utils.layers import create_unet3d_class
 from utils.train import Trainer
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Comment to use GPU
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # uncomment to not use GPU
 
 
 def testTrainer():

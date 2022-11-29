@@ -9,6 +9,9 @@ from utils.layers_func import create_unet3d
 from utils.kd import Trainer_KD
 
 
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # uncomment to not use GPU
+
+
 def testKD():
     """Testing Trainer KD Class"""
     tf.random.set_seed(10)
