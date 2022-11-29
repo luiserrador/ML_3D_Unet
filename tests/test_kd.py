@@ -1,5 +1,6 @@
 import os
 import shutil
+import unittest
 
 import tensorflow as tf
 import numpy as np
@@ -100,3 +101,7 @@ def testKD():
     shutil.rmtree(model_dir)
     shutil.rmtree(model_dir + '_student_scratch')
     shutil.rmtree(model_dir + '_teacher_scratch')
+
+
+if __name__ == '__main__':
+    unittest.main()

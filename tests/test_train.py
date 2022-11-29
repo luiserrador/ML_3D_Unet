@@ -1,5 +1,6 @@
 import os
 import shutil
+import unittest
 
 import tensorflow as tf
 from utils.layers_func import create_unet3d
@@ -61,3 +62,7 @@ def testTrainer():
                   accuracy_fn=accuracy_fn, BATCH_SIZE=1, EPOCHS=4, save_step=1)
 
     shutil.rmtree(model_dir)
+
+
+if __name__ == '__main__':
+    unittest.main()
