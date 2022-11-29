@@ -1,4 +1,4 @@
-# 3D Unet Framework
+# 3D Unet Framework - Includes Knowledge Distillation
 
 This is a Tensorflow 2 based implementation of a generic 3D-Unet.
 
