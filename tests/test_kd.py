@@ -18,20 +18,8 @@ def testKD():
         shutil.rmtree(model_dir)
 
     student_model = create_unet3d_class(input_shape=[64, 64, 64, 1],
-                                  n_convs=1,
-                                  n_filters=[2, 4],
-                                  ksize=[5, 5, 5],
-                                  padding='same',
-                                  pooling='avg',
-                                  norm='batch_norm',
-                                  dropout=[0],
-                                  upsampling=True,
-                                  activation='relu',
-                                  depth=2)
-
-    teacher_model = create_unet3d(input_shape=[64, 64, 64, 1],
                                         n_convs=1,
-                                        n_filters=[4, 8],
+                                        n_filters=[2, 4],
                                         ksize=[5, 5, 5],
                                         padding='same',
                                         pooling='avg',
@@ -40,6 +28,18 @@ def testKD():
                                         upsampling=True,
                                         activation='relu',
                                         depth=2)
+
+    teacher_model = create_unet3d(input_shape=[64, 64, 64, 1],
+                                  n_convs=1,
+                                  n_filters=[4, 8],
+                                  ksize=[5, 5, 5],
+                                  padding='same',
+                                  pooling='avg',
+                                  norm='batch_norm',
+                                  dropout=[0],
+                                  upsampling=True,
+                                  activation='relu',
+                                  depth=2)
 
     training_data = np.zeros([10, 64, 64, 64, 1])
     training_mask = np.zeros([10, 64, 64, 64, 1])
@@ -54,9 +54,12 @@ def testKD():
         rand_x2 = np.random.randint(0, 64)
         rand_y2 = np.random.randint(0, 64)
         circle_data2 = (xx - rand_x2) ** 2 + (yy - rand_y2) ** 2
-        circle_data = np.random.uniform(0, 1, [64, 64]) * (np.logical_and(circle_data1 < 150, circle_data1 > 0, dtype=np.float) + np.logical_and(circle_data2 < 100, circle_data2 > 0, dtype=np.float))
+        circle_data = np.random.uniform(0, 1, [64, 64]) * (
+                    np.logical_and(circle_data1 < 150, circle_data1 > 0, dtype=np.float) + np.logical_and(
+                circle_data2 < 100, circle_data2 > 0, dtype=np.float))
         training_data[j, :, :, :, 0] = np.stack((circle_data,) * 64, axis=0)
-        circle_data = np.logical_and(circle_data1 < 200, circle_data1 > 0, dtype=np.float) + np.logical_and(circle_data2 < 250, circle_data2 > 0, dtype=np.float)
+        circle_data = np.logical_and(circle_data1 < 200, circle_data1 > 0, dtype=np.float) + np.logical_and(
+            circle_data2 < 250, circle_data2 > 0, dtype=np.float)
         training_mask[j, :, :, :, 0] = np.stack((circle_data,) * 64, axis=0)
 
     for j in range(10):
@@ -67,9 +70,12 @@ def testKD():
         rand_x2 = np.random.randint(0, 64)
         rand_y2 = np.random.randint(0, 64)
         circle_data2 = (xx - rand_x2) ** 2 + (yy - rand_y2) ** 2
-        circle_data = np.random.uniform(0, 1, [64, 64]) * (np.logical_and(circle_data1 < 150, circle_data1 > 0, dtype=np.float) + np.logical_and(circle_data2 < 100, circle_data2 > 0, dtype=np.float))
+        circle_data = np.random.uniform(0, 1, [64, 64]) * (
+                    np.logical_and(circle_data1 < 150, circle_data1 > 0, dtype=np.float) + np.logical_and(
+                circle_data2 < 100, circle_data2 > 0, dtype=np.float))
         validation_data[j, :, :, :, 0] = np.stack((circle_data,) * 64, axis=0)
-        circle_data = np.logical_and(circle_data1 < 200, circle_data1 > 0, dtype=np.float) + np.logical_and(circle_data2 < 250, circle_data2 > 0, dtype=np.float)
+        circle_data = np.logical_and(circle_data1 < 200, circle_data1 > 0, dtype=np.float) + np.logical_and(
+            circle_data2 < 250, circle_data2 > 0, dtype=np.float)
         validation_mask[j, :, :, :, 0] = np.stack((circle_data,) * 64, axis=0)
 
     epochs = 3
@@ -92,5 +98,5 @@ def testKD():
                   accuracy_fn=accuracy_fn, BATCH_SIZE=1, EPOCHS=epochs, save_step=1)
 
     shutil.rmtree(model_dir)
-    shutil.rmtree(model_dir+'_student_scratch')
-    shutil.rmtree(model_dir+'_teacher_scratch')
+    shutil.rmtree(model_dir + '_student_scratch')
+    shutil.rmtree(model_dir + '_teacher_scratch')
