@@ -45,5 +45,5 @@ The difference between these two methods is that *create_unet3d* will return a m
 
 This framework also includes the tools to apply Knowledge Distilation on segmentation problems that use 3D-Unet, by following this approach:
 <p align="center">
-  <img src="https://github.com/luiserrador/ml/blob/master/images/KDProcess.png">
+  <img src="https://github.com/luiserrador/ml/blob/master/images/KDProcess.png" width=300>
 </p>
