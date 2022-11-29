@@ -40,3 +40,5 @@ unet_model = create_unet3d_class(input_shape=[128, 128, 128, 2],
                                  activation='relu',
                                  depth=4)
 ```
+
+The difference between these two methods is that *create_unet3d* will return a model with all the Tensorflow layers that compose the U-Net, while the *create_unet3d_class* will return a model with only 1 layer, which contains the U-Net structure.
