@@ -42,3 +42,8 @@ unet_model = create_unet3d_class(input_shape=[128, 128, 128, 1],
 ```
 
 The difference between these two methods is that *create_unet3d* will return a model with all the Tensorflow layers that compose the U-Net, while the *create_unet3d_class* will return a model with only 1 layer, which contains the U-Net structure. For more examples, including training, visit [examples](https://github.com/luiserrador/ml/blob/master/examples).
+
+This framework also includes the tools to apply Knowledge Distilation on segmentation problems that use 3D-Unet, by following this approach:
+<p align="center">
+  <img src="https://github.com/luiserrador/ml/blob/master/images/KDProcess.png" width=700>
+</p>
