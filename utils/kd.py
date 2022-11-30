@@ -32,15 +32,17 @@ class Trainer_KD:
     def __init__(self, student_model, teacher_model, temperature, optimizer, learning_rate, model_dir):
 
         self.student_model = _get_student_soften(student_model, temperature)
-        self.teacher_model = _get_teacher_soften(teacher_model, temperature)
         self.student_model_scratch = student_model
         self.teacher_model_scratch = teacher_model
+        self.temperature = temperature
 
         with tf.distribute.get_strategy().scope():
             self.train_accuracy = tf.keras.metrics.Sum()
             self.valid_accuracy = tf.keras.metrics.Sum()
             self.train_loss = tf.keras.metrics.Sum()
             self.valid_loss = tf.keras.metrics.Sum()
+            self.student_loss_result = tf.keras.metrics.Sum()
+            self.distillation_loss_result = tf.keras.metrics.Sum()
 
             self.optimizer = optimizer(learning_rate=learning_rate)
 
@@ -60,8 +62,10 @@ class Trainer_KD:
 
         self.trainer_student_scratch = Trainer(self.student_model_scratch, optimizer, learning_rate,
                                                self.student_model_dir_scratch)
-        self.trainer_teacher_scratch = Trainer(self.student_model_scratch, optimizer, learning_rate,
+        self.trainer_teacher_scratch = Trainer(self.teacher_model_scratch, optimizer, learning_rate,
                                                self.teacher_model_dir_scratch)
+
+        self.teacher_model = _get_teacher_soften(self.trainer_teacher_scratch.model, temperature)
 
         if self.manager.latest_checkpoint:
             print("Restored from {}".format(self.manager.latest_checkpoint))
@@ -70,8 +74,8 @@ class Trainer_KD:
             print("Initializing from scratch.")
             self.step = 0
 
-    def train(self, train_ds, valid_ds, train_size, validation_size, loss_fn, accuracy_fn, BATCH_SIZE, EPOCHS,
-              save_step=1):
+    def train(self, train_ds, valid_ds, train_size, validation_size, loss_fn, distillation_fn, accuracy_fn, BATCH_SIZE,
+              EPOCHS, save_step=1):
         """ Train the model
 
         Parameters
@@ -105,9 +109,12 @@ class Trainer_KD:
                                            BATCH_SIZE, EPOCHS, save_step)
 
         self.EPOCHS = EPOCHS
+        self.results = {'student_loss': None,
+                        'distillation_loss': None}
 
         with tf.distribute.get_strategy().scope():
             self.loss_fn = loss_fn
+            self.distillation_fn = distillation_fn
             self.accuracy_fn = accuracy_fn
 
         self.STEPS_PER_CALL = STEPS_PER_EPOCH = train_size // BATCH_SIZE
@@ -116,7 +123,7 @@ class Trainer_KD:
         epoch_steps = 0
         epoch_start_time = time.time()
 
-        history = {'loss': [], 'val_loss': [], 'acc': [], 'val_acc': []}
+        history = {'loss': [], 'val_loss': [], 'acc': [], 'val_acc': [], 'student_loss': [], 'distillation_loss': []}
 
         train_data_iter = iter(train_ds)
         valid_data_iter = iter(valid_ds)
@@ -145,11 +152,14 @@ class Trainer_KD:
                     history['val_acc'].append(self.valid_accuracy.result().numpy() / (BATCH_SIZE * valid_epoch_steps))
                     history['loss'].append(self.train_loss.result().numpy() / (BATCH_SIZE * epoch_steps))
                     history['val_loss'].append(self.valid_loss.result().numpy() / (BATCH_SIZE * valid_epoch_steps))
+                    history['student_loss'].append(self.student_loss_result.result().numpy() / (BATCH_SIZE * epoch_steps))
+                    history['distillation_loss'].append(self.distillation_loss_result.result().numpy() / (BATCH_SIZE * epoch_steps))
 
                     # report metrics
                     epoch_time = time.time() - epoch_start_time
                     print('time: {:0.1f}s'.format(epoch_time),
-                          'loss: {:0.4f}'.format(history['loss'][-1]),
+                          'student_loss: {:0.4f}'.format(history['student_loss'][-1]),
+                          'distillation_loss: {:0.4f}'.format(history['distillation_loss'][-1]),
                           'acc: {:0.4f}'.format(history['acc'][-1]),
                           'val_loss: {:0.4f}'.format(history['val_loss'][-1]),
                           'val_acc: {:0.4f}'.format(history['val_acc'][-1]))
@@ -208,11 +218,13 @@ class Trainer_KD:
     def KD_loss(self, y_true, y_pred, y_teacher, lambd=0.5):
         y_pred, y_pred_KD = y_pred[:, :, :, :, 0], y_pred[:, :, :, :, 1]
         # Classic cross-entropy (without temperature)
-        CE_loss = self.loss_fn(y_true, y_pred)
+        student_loss = self.loss_fn(y_true, y_pred)
         # KL-Divergence loss for softened output (with temperature)
-        KL_loss = tf.keras.losses.kl_divergence(y_teacher, y_pred_KD)
+        distillation_loss = (self.distillation_fn(y_teacher, y_pred_KD))
+        self.student_loss_result.update_state(student_loss)
+        self.distillation_loss_result.update_state(distillation_loss)
 
-        return lambd * CE_loss + (1 - lambd) * KL_loss
+        return lambd * student_loss + (1 - lambd) * distillation_loss
 
 
 def _get_teacher_soften(teacher_model, temperature):
