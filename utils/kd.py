@@ -178,9 +178,9 @@ class Trainer_KD:
     @tf.function
     def train_step(self, data_iter):
         def train_step_fn(images, labels):
+            probabilities_teacher = self.teacher_model(images, training=False)
             with tf.GradientTape() as tape:
                 probabilities = self.student_model(images, training=True)
-                probabilities_teacher = self.teacher_model(images, training=False)
                 loss = self.KD_loss(tf.cast(labels, tf.float32), probabilities, probabilities_teacher)
             grads = tape.gradient(loss, self.student_model.trainable_variables)
             self.optimizer.apply_gradients(zip(grads, self.student_model.trainable_variables))
